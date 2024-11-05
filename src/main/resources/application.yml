@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: "mock-stock-server"
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://localhost:13306/stock?serverTimezone=UTC&characterEncoding=UTF-8
+    username: min9805
+    password: backend
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        auto_quote_keyword: false
+        globally_quoted_identifiers: false
+        format_sql: true
+        show_sql: true
