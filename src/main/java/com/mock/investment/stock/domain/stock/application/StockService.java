@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StockService {
 	private final StockRepository stockRepository;
+	private final StockBulkRepository stockBulkRepository;
 	private final HttpClient httpClient;
 
 	public CompletableFuture<List<StockDto>> updateStocksFromUpbitAsync() {
@@ -68,6 +69,7 @@ public class StockService {
 				.map(StockCodeRequest::toEntity)
 				.collect(Collectors.toList());
 
+		return stockBulkRepository.saveAll(newStocks);
 	}
 
 }
