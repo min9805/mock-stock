@@ -5,6 +5,11 @@ spring:
 project:
   version: 0.0.1
 
+jwt:
+  secret:
+    access: ${JWT_ACCESS_SECRET}
+    refresh: ${JWT_REFRESH_SECRET}
+
 ---
 spring:
   config:
