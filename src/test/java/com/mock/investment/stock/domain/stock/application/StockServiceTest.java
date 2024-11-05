@@ -2,6 +2,7 @@ package com.mock.investment.stock.domain.stock.application;
 
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.domain.stock.domain.Stock;
+import com.mock.investment.stock.domain.stock.dto.StockDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -42,7 +43,7 @@ class StockServiceTest {
 		when(httpClient.sendAsync(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
 				.thenReturn(CompletableFuture.completedFuture(httpResponse));
 
-		CompletableFuture<List<Stock>> result = stockService.updateStocksFromUpbitAsync();
+		CompletableFuture<List<StockDto>> result = stockService.updateStocksFromUpbitAsync();
 
 		assertNotNull(result);
 		assertEquals(1, result.join().size());
@@ -55,7 +56,7 @@ class StockServiceTest {
 		when(httpClient.sendAsync(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
 				.thenReturn(CompletableFuture.completedFuture(httpResponse));
 
-		CompletableFuture<List<Stock>> result = stockService.updateStocksFromUpbitAsync();
+		CompletableFuture<List<StockDto>> result = stockService.updateStocksFromUpbitAsync();
 
 		assertThrows(RuntimeException.class, result::join);
 	}
@@ -68,7 +69,7 @@ class StockServiceTest {
 		when(httpClient.sendAsync(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
 				.thenReturn(CompletableFuture.completedFuture(httpResponse));
 
-		CompletableFuture<List<Stock>> result = stockService.updateStocksFromUpbitAsync();
+		CompletableFuture<List<StockDto>> result = stockService.updateStocksFromUpbitAsync();
 
 		assertThrows(RuntimeException.class, result::join);
 	}
