@@ -10,14 +10,14 @@ import java.util.List;
 @Builder
 public class StockDto {
 	private String market;
-	private String korean_name;
-	private String english_name;
+	private String koreanName;
+	private String englishName;
 
 	public static StockDto fromEntity(Stock stock) {
 		return StockDto.builder()
 				.market(stock.getCode())
-				.korean_name(stock.getKoreanName())
-				.english_name(stock.getEnglishName())
+				.koreanName(stock.getKoreanName())
+				.englishName(stock.getEnglishName())
 				.build();
 	}
 

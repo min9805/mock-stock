@@ -13,17 +13,17 @@ import lombok.*;
 public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long account_id;
+	private Long accountId;
 
-	private String account_number;
+	private String accountNumber;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Double krw_balance;
+	private Double krwBalance;
 
-	private Double usd_balance;
+	private Double usdBalance;
 
-	private Double bitcoin_balance;
+	private Double bitcoinBalance;
 }

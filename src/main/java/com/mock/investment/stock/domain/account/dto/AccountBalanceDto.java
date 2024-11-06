@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
-
-import java.io.Serializable;
 
 /**
  * DTO for {@link com.mock.investment.stock.domain.account.domain.Account}
@@ -16,23 +13,23 @@ import java.io.Serializable;
 @Builder
 public class AccountBalanceDto {
 	@NotBlank
-	String account_number;
+	String accountNumber;
 
 	@PositiveOrZero
-	Double krw_balance;
+	Double krwBalance;
 
 	@PositiveOrZero
-	Double usd_balance;
+	Double usdBalance;
 
 	@PositiveOrZero
-	Double bitcoin_balance;
+	Double bitcoinBalance;
 
 	public static AccountBalanceDto fromEntity(Account account) {
 		return AccountBalanceDto.builder()
-				.account_number(account.getAccount_number())
-				.krw_balance(account.getKrw_balance())
-				.usd_balance(account.getUsd_balance())
-				.bitcoin_balance(account.getBitcoin_balance())
+				.accountNumber(account.getAccountNumber())
+				.krwBalance(account.getKrwBalance())
+				.usdBalance(account.getUsdBalance())
+				.bitcoinBalance(account.getBitcoinBalance())
 				.build();
 	}
 }

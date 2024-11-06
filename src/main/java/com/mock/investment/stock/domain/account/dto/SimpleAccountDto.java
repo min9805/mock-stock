@@ -12,23 +12,23 @@ import java.util.List;
 @Builder
 public class SimpleAccountDto {
 	@NotBlank
-	private String account_number;
+	private String accountNumber;
 
 	@PositiveOrZero
-	private Double krw_balance;
+	private Double krwBalance;
 
 	@PositiveOrZero
-	private Double usd_balance;
+	private Double usdBalance;
 
 	@PositiveOrZero
-	private Double bitcoin_balance;
+	private Double bitcoinBalance;
 
 	static public SimpleAccountDto fromEntity(Account account) {
 		return SimpleAccountDto.builder()
-				.account_number(account.getAccount_number())
-				.krw_balance(account.getKrw_balance())
-				.usd_balance(account.getUsd_balance())
-				.bitcoin_balance(account.getBitcoin_balance())
+				.accountNumber(account.getAccountNumber())
+				.krwBalance(account.getKrwBalance())
+				.usdBalance(account.getUsdBalance())
+				.bitcoinBalance(account.getBitcoinBalance())
 				.build();
 	}
 

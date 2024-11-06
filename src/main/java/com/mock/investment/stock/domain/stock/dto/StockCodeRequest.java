@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 public class StockCodeRequest {
 	private String market;
 
-	private String korean_name;
+	private String koreanName;
 
-	private String english_name;
+	private String englishName;
 
 	public Stock toEntity() {
 		return Stock.builder()
 				.code(market)
-				.koreanName(korean_name)
-				.englishName(english_name)
+				.koreanName(koreanName)
+				.englishName(englishName)
 				.build();
 	}
 }
