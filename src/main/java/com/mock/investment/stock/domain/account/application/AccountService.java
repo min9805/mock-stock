@@ -14,13 +14,8 @@ import java.util.List;
 public class AccountService {
 	private final AccountRepository accountRepository;
 
-	public List<SimpleAccountDto> findByUserId(Long userId) {
-		List<Account> accouts = accountRepository.findByUserId(userId);
-		return SimpleAccountDto.fromEntities(accouts);
-	}
-
-	public AccountBalanceDto getAccountBalance(String accountNumber) {
-		Account account = accountRepository.findByAccountNumber(accountNumber);
-		return AccountBalanceDto.fromEntity(account);
+	public SimpleAccountDto findByUserId(Long userId) {
+		Account accout = accountRepository.findByUserId(userId).get(0);
+		return SimpleAccountDto.fromEntity(accout);
 	}
 }
