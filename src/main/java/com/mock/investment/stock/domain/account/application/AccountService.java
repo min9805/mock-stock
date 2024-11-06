@@ -4,6 +4,7 @@ import com.mock.investment.stock.domain.account.dao.AccountRepository;
 import com.mock.investment.stock.domain.account.domain.Account;
 import com.mock.investment.stock.domain.account.dto.AccountBalanceDto;
 import com.mock.investment.stock.domain.account.dto.SimpleAccountDto;
+import com.mock.investment.stock.domain.stock.dto.StockDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

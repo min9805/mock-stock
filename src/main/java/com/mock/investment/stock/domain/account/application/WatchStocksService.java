@@ -1,9 +1,8 @@
 package com.mock.investment.stock.domain.account.application;
 
 import com.mock.investment.stock.domain.account.dao.WatchStockRepository;
-import com.mock.investment.stock.domain.account.domain.WatchStocks;
+import com.mock.investment.stock.domain.account.domain.WatchStock;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
-import com.mock.investment.stock.domain.stock.domain.Stock;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.user.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,11 @@ public class WatchStocksService {
      * 내 관심 종목 조회
      */
     public List<StockDto> getWatchStocks(Long userId) {
-        List<WatchStocks> watchList = watchStockRepository.findByUserId(userId);
+        List<WatchStock> watchList = watchStockRepository.findByUserId(userId);
 
         return StockDto.fromEntities(
                 watchList.stream()
-                        .map(WatchStocks::getStock)
+                        .map(WatchStock::getStock)
                         .toList()
         );
     }
@@ -35,7 +34,7 @@ public class WatchStocksService {
      * 관심 종목 설정
      */
     public void setWatchStocks(Long userId, String stockCodes) {
-        WatchStocks watchStocks = WatchStocks.builder()
+        WatchStock watchStock = WatchStock.builder()
                 .user(userRepository.getReferenceById(userId))
                 .stock(stockRepository.getReferenceById(stockCodes))
                 .build();
