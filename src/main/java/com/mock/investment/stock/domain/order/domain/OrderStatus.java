@@ -9,7 +9,7 @@ public enum OrderStatus {
     PENDING(0, "주문 대기"),
     PARTIALLY_FILLED(1, "부분 체결"),
     COMPLETED(2, "체결"),
-    CANCELED(3, "취소"),
+    CANCELLED(3, "취소"),
     REJECTED(4, "거부"),
     EXPIRED(5, "만료");
 
