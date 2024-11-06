@@ -46,9 +46,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             setAuthentication(email);
-        } else {
-            jwtExceptionHandler(response);
-            return;
         }
 
         filterChain.doFilter(request, response);

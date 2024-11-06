@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mock.investment.stock.domain.stock.dao.StockBulkRepository;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.domain.stock.domain.Stock;
-import com.mock.investment.stock.domain.stock.dto.StockCodeRequest;
+import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromUpbit;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
 import com.mock.investment.stock.domain.stock.exception.UpbitAPIException;
@@ -50,7 +50,7 @@ public class StockService {
 					try {
 						ObjectMapper objectMapper = new ObjectMapper();
 						return objectMapper.readValue(body,
-								new TypeReference<List<StockCodeRequest>>() {});
+								new TypeReference<List<StockCodeRequestFromUpbit>>() {});
 					} catch (JsonProcessingException e) {
 						throw new InvalidStockCodeRequestException(e.getMessage());
 					}
@@ -59,14 +59,14 @@ public class StockService {
 	}
 
 	@Transactional
-	protected List<StockDto> updateStocks(List<StockCodeRequest> stockCodeRequests) {
+	protected List<StockDto> updateStocks(List<StockCodeRequestFromUpbit> stockCodeRequestFromUpbits) {
 		Set<String> existingMarkets = stockRepository.findAll().stream()
 				.map(Stock::getCode)
 				.collect(Collectors.toSet());
 
-		List<Stock> newStocks = stockCodeRequests.stream()
+		List<Stock> newStocks = stockCodeRequestFromUpbits.stream()
 				.filter(request -> !existingMarkets.contains(request.getMarket()))
-				.map(StockCodeRequest::toEntity)
+				.map(StockCodeRequestFromUpbit::toEntity)
 				.collect(Collectors.toList());
 
 		return stockBulkRepository.saveAll(newStocks);
