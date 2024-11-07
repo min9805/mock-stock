@@ -44,8 +44,8 @@ public class BuyOrderService {
                 .stock(stockRepository.getReferenceById(buyOrderRequest.getCode()))
                 .account(accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber()))
                 .orderType(buyOrderRequest.getOrderType())
-                .buyPrice(buyOrderRequest.getPrice())
-                .buyQuantity(buyOrderRequest.getQuantity())
+                .price(buyOrderRequest.getPrice())
+                .quantity(buyOrderRequest.getQuantity())
 
                 .orderStatus(OrderStatus.PENDING)
                 .filledQuantity(0)

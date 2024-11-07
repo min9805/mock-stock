@@ -3,13 +3,14 @@ package com.mock.investment.stock.domain.order.dto;
 import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.domain.OrderStatus;
 import com.mock.investment.stock.domain.order.domain.OrderType;
+import com.mock.investment.stock.domain.order.domain.SellOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class BuyOrderDto {
+public class SellOrderDto {
     @Schema(description = "주문 타입", example = "LIMIT")
     private OrderType orderType;
 
@@ -28,14 +29,14 @@ public class BuyOrderDto {
     @Schema(description = "매수 주문 남은 수량", example = "7")
     private Integer remainingQuantity;
 
-    public static BuyOrderDto fromEntity(BuyOrder buyOrder) {
-        return BuyOrderDto.builder()
-                .orderType(buyOrder.getOrderType())
-                .orderStatus(buyOrder.getOrderStatus())
-                .buyPrice(buyOrder.getPrice())
-                .buyQuantity(buyOrder.getQuantity())
-                .filledQuantity(buyOrder.getFilledQuantity())
-                .remainingQuantity(buyOrder.getRemainingQuantity())
+    public static SellOrderDto fromEntity(SellOrder sellOrder) {
+        return SellOrderDto.builder()
+                .orderType(sellOrder.getOrderType())
+                .orderStatus(sellOrder.getOrderStatus())
+                .buyPrice(sellOrder.getPrice())
+                .buyQuantity(sellOrder.getQuantity())
+                .filledQuantity(sellOrder.getFilledQuantity())
+                .remainingQuantity(sellOrder.getRemainingQuantity())
                 .build();
     }
 }
