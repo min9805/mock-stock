@@ -29,3 +29,7 @@ spring:
         globally_quoted_identifiers: false
         format_sql: true
         show_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
