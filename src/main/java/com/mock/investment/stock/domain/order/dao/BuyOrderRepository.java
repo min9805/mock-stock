@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BuyOrderRepository extends JpaRepository<BuyOrder, Long>{
-    List<BuyOrder> findByAccount_AccountNumberAndStockCode(String accountNumber, String stockCode);
+    List<BuyOrder> findByAccount_AccountNumberAndStockSymbol(String accountNumber, String stockSymbol);
 }

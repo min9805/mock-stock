@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mock.investment.stock.domain.stock.dao.StockBulkRepository;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.domain.stock.domain.Stock;
+import com.mock.investment.stock.domain.stock.dto.BybitResponse;
+import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromBybit;
 import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromUpbit;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
@@ -32,9 +34,9 @@ public class StockService {
 	private final StockBulkRepository stockBulkRepository;
 	private final HttpClient httpClient;
 
-	public CompletableFuture<List<StockDto>> updateStocksFromUpbitAsync() {
+	public CompletableFuture<List<StockDto>> updateStocksFromBybitAsync() {
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("https://api.upbit.com/v1/market/all"))
+				.uri(URI.create("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=500"))
 				.header("Accept", "application/json")
 				.GET()
 				.build();
@@ -49,8 +51,8 @@ public class StockService {
 				.thenApply(body -> {
 					try {
 						ObjectMapper objectMapper = new ObjectMapper();
-						return objectMapper.readValue(body,
-								new TypeReference<List<StockCodeRequestFromUpbit>>() {});
+						BybitResponse bybitResponse = objectMapper.readValue(body, BybitResponse.class);
+						return bybitResponse.getResult().getList();
 					} catch (JsonProcessingException e) {
 						throw new InvalidStockCodeRequestException(e.getMessage());
 					}
@@ -59,14 +61,14 @@ public class StockService {
 	}
 
 	@Transactional
-	protected List<StockDto> updateStocks(List<StockCodeRequestFromUpbit> stockCodeRequestFromUpbits) {
+	protected List<StockDto> updateStocks(List<StockCodeRequestFromBybit> stockCodeRequestFromUpbits) {
 		Set<String> existingMarkets = stockRepository.findAll().stream()
-				.map(Stock::getCode)
+				.map(Stock::getSymbol)
 				.collect(Collectors.toSet());
 
 		List<Stock> newStocks = stockCodeRequestFromUpbits.stream()
-				.filter(request -> !existingMarkets.contains(request.getMarket()))
-				.map(StockCodeRequestFromUpbit::toEntity)
+				.filter(request -> !existingMarkets.contains(request.getSymbol()))
+				.map(StockCodeRequestFromBybit::toEntity)
 				.collect(Collectors.toList());
 
 		return stockBulkRepository.saveAll(newStocks);

@@ -8,7 +8,6 @@ import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
 import com.mock.investment.stock.domain.order.dto.BuyOrderModifyRequest;
 import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
 import com.mock.investment.stock.domain.order.dto.OrderRequest;
-import com.mock.investment.stock.domain.order.exception.InvalidOrderToCancelException;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class BuyOrderService {
      * 매수 주문 조회
      */
     public List<BuyOrderDto> getBuyOrders(OrderRequest orderRequest){
-        List<BuyOrder> buyOrders = buyOrderRepository.findByAccount_AccountNumberAndStockCode(orderRequest.getAccountNumber(), orderRequest.getStockCode());
+        List<BuyOrder> buyOrders = buyOrderRepository.findByAccount_AccountNumberAndStockSymbol(orderRequest.getAccountNumber(), orderRequest.getCoinSymbol());
 
         return buyOrders.stream()
                 .map(BuyOrderDto::fromEntity)

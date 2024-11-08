@@ -8,9 +8,10 @@ import lombok.Data;
 @Data
 @Builder
 public class HoldingStockDto {
-private String accountNumber;
+    private String accountNumber;
+
     @NotBlank
-    private String stockCode;
+    private String coinSymbol;
 
     @PositiveOrZero
     private int quantity;

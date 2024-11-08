@@ -8,5 +8,5 @@ import java.util.List;
 public interface WatchStockRepository extends JpaRepository<WatchStock, Long> {
     List<WatchStock> findByUserId(Long userId);
 
-    void deleteByUserIdAndStockCode(Long userId, String stockCode);
+    void deleteByUserIdAndStockSymbol(Long userId, String symbol);
 }

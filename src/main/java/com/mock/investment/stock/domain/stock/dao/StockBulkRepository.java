@@ -16,12 +16,12 @@ public class StockBulkRepository {
 
 	@Transactional
 	public List<StockDto> saveAll(List<Stock> stockList) {
-		String sql = "INSERT INTO stocks (code, korean_name, english_name) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO stocks (symbol, base_coin, quote_coin) VALUES (?, ?, ?)";
 
 		jdbcTemplate.batchUpdate(sql, stockList, stockList.size(), (ps, stock) -> {
-			ps.setString(1, stock.getCode());
-			ps.setString(2, stock.getKoreanName());
-			ps.setString(3, stock.getEnglishName());
+			ps.setString(1, stock.getSymbol());
+			ps.setString(2, stock.getBaseCoin());
+			ps.setString(3, stock.getQuoteCoin());
 		});
 
 		return StockDto.fromEntities(stockList);

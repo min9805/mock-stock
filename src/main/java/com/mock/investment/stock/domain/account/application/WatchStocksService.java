@@ -33,17 +33,17 @@ public class WatchStocksService {
     /**
      * 관심 종목 설정
      */
-    public void setWatchStocks(Long userId, String stockCodes) {
+    public void setWatchStocks(Long userId, String coinSymbol) {
         WatchStock watchStock = WatchStock.builder()
                 .user(userRepository.getReferenceById(userId))
-                .stock(stockRepository.getReferenceById(stockCodes))
+                .stock(stockRepository.findBySymbol(coinSymbol))
                 .build();
     }
 
     /**
      * 관심 종목 삭제
      */
-    public void deleteWatchStocks(Long userId, String stockCodes) {
-        watchStockRepository.deleteByUserIdAndStockCode(userId, stockCodes);
+    public void deleteWatchStocks(Long userId, String coinSymbol) {
+        watchStockRepository.deleteByUserIdAndStockSymbol(userId, coinSymbol);
     }
 }

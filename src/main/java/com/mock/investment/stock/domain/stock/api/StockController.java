@@ -23,7 +23,7 @@ public class StockController {
 
 	@GetMapping("update")
 	public List<StockDto> updateStocksFromUpbitAsync() throws ExecutionException, InterruptedException, TimeoutException {
-		return stockService.updateStocksFromUpbitAsync().get(5, TimeUnit.SECONDS);
+		return stockService.updateStocksFromBybitAsync().get(5, TimeUnit.SECONDS);
 	}
 
 

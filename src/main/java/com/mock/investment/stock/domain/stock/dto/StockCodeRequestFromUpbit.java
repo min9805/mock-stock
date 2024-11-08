@@ -18,12 +18,4 @@ public class StockCodeRequestFromUpbit {
 	private String korean_name;
 
 	private String english_name;
-
-	public Stock toEntity() {
-		return Stock.builder()
-				.code(market)
-				.koreanName(korean_name)
-				.englishName(english_name)
-				.build();
-	}
 }
