@@ -51,8 +51,11 @@ public class StockService {
 				.thenApply(body -> {
 					try {
 						ObjectMapper objectMapper = new ObjectMapper();
-						BybitResponse bybitResponse = objectMapper.readValue(body, BybitResponse.class);
-						return bybitResponse.getResult().getList();
+						StockCodeRequestFromBybit response = objectMapper.readValue(
+								body,
+								StockCodeRequestFromBybit.class
+						);
+						return response.getResult().getList();
 					} catch (JsonProcessingException e) {
 						throw new InvalidStockCodeRequestException(e.getMessage());
 					}
@@ -61,14 +64,14 @@ public class StockService {
 	}
 
 	@Transactional
-	protected List<StockDto> updateStocks(List<StockCodeRequestFromBybit> stockCodeRequestFromUpbits) {
+	protected List<StockDto> updateStocks(List<StockCodeRequestFromBybit.StockRequest> stockCodeRequestFromUpbits) {
 		Set<String> existingMarkets = stockRepository.findAll().stream()
 				.map(Stock::getSymbol)
 				.collect(Collectors.toSet());
 
 		List<Stock> newStocks = stockCodeRequestFromUpbits.stream()
 				.filter(request -> !existingMarkets.contains(request.getSymbol()))
-				.map(StockCodeRequestFromBybit::toEntity)
+				.map(StockCodeRequestFromBybit.StockRequest::toEntity)
 				.collect(Collectors.toList());
 
 		return stockBulkRepository.saveAll(newStocks);
