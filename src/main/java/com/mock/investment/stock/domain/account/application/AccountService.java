@@ -36,10 +36,8 @@ public class AccountService {
 
 		Account account = Account.builder()
 				.user(userRepository.getReferenceById(userId))
-				.krwBalance(0.0)
-				.usdBalance(1000000.0)
-				.bitcoinBalance(0.0)
 				.build();
+		account.createAccount();
 
 		accountRepository.save(account);
 
