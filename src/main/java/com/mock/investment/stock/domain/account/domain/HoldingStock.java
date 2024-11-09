@@ -18,14 +18,18 @@ public class HoldingStock extends BaseEntity {
     private Long holding_stock_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code")
     private Stock stock;
 
-    private Long quantity;
+    private Double quantity;
 
     private Double avgPrice;
+
+    public void addQuantity(Double quantity) {
+        this.quantity += quantity;
+    }
 }

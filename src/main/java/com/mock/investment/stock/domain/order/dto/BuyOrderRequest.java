@@ -20,7 +20,7 @@ public class BuyOrderRequest {
 
     @Positive
     @Schema(description = "주문 수량", example = "10")
-    private Integer quantity;
+    private Double quantity;
 
     @Schema(description = "주문 가격", example = "10000")
     private Double price;

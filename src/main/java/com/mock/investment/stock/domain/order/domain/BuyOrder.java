@@ -27,7 +27,7 @@ public class BuyOrder extends Order {
                 .price(newPrice)
                 .quantity(order.getRemainingQuantity())
                 .orderStatus(OrderStatus.PENDING)
-                .filledQuantity(0)
+                .filledQuantity(0.0)
                 .remainingQuantity(order.getRemainingQuantity())
                 .build();
     }

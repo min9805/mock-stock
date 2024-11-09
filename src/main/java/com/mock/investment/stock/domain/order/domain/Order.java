@@ -25,7 +25,7 @@ public class Order {
 
     @PositiveOrZero
     @Comment("주문 수량")
-    private Integer quantity;
+    private Double quantity;
 
     @Comment("주문 상태")
     private OrderStatus orderStatus;
@@ -38,11 +38,11 @@ public class Order {
 
     @PositiveOrZero
     @Comment("체결 수량")
-    private Integer filledQuantity;
+    private Double filledQuantity;
 
     @PositiveOrZero
     @Comment("주문 남은 수량")
-    private Integer remainingQuantity;
+    private Double remainingQuantity;
 
     @Comment("체결 가격")
     private Double executedPrice;

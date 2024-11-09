@@ -20,13 +20,13 @@ public class BuyOrderDto {
     private Double buyPrice;
 
     @Schema(description = "주문 수량", example = "10")
-    private Integer buyQuantity;
+    private Double buyQuantity;
 
     @Schema(description = "매수 체결 수량", example = "3")
-    private Integer filledQuantity;
+    private Double filledQuantity;
 
     @Schema(description = "매수 주문 남은 수량", example = "7")
-    private Integer remainingQuantity;
+    private Double remainingQuantity;
 
     public static BuyOrderDto fromEntity(BuyOrder buyOrder) {
         return BuyOrderDto.builder()
