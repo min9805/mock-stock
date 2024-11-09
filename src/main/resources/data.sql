@@ -7,4 +7,4 @@ VALUES
 INSERT INTO accounts
     (bitcoin_balance, krw_balance, usd_balance, account_id, user_id, account_number)
 VALUES
-    ('0', '1000000', '0', '1', '1', '1234-1234-12');
+    ('0', '1000000', '100000000', '1', '1', '1234-1234-12');
