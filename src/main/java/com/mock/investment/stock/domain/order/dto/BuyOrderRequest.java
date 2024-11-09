@@ -1,6 +1,5 @@
 package com.mock.investment.stock.domain.order.dto;
 
-import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.domain.OrderType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -12,11 +11,11 @@ import lombok.Data;
 @Builder
 public class BuyOrderRequest {
     @NotBlank
-    @Schema(description = "주식 코드", example = "KRW-BIT")
-    private String code;
+    @Schema(description = "주식 코드", example = "BTCUSDT")
+    private String symbol;
 
     @NotBlank
-    @Schema(description = "계좌 번호", example = "1234-5678")
+    @Schema(description = "계좌 번호", example = "1234-1234-12")
     private String accountNumber;
 
     @Positive

@@ -12,11 +12,13 @@ import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromUpbit;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
 import com.mock.investment.stock.domain.stock.exception.UpbitAPIException;
+import com.mock.investment.stock.global.websocket.PriceHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 public class StockService {
 	private final StockRepository stockRepository;
 	private final StockBulkRepository stockBulkRepository;
+
+	private final PriceHolder priceHolder;
 	private final HttpClient httpClient;
 
 	public CompletableFuture<List<StockDto>> updateStocksFromBybitAsync() {
@@ -77,4 +81,7 @@ public class StockService {
 		return stockBulkRepository.saveAll(newStocks);
 	}
 
+    public BigDecimal getStockPrice(String symbol) {
+		return priceHolder.getCurrentPrice(symbol);
+    }
 }

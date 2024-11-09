@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -21,10 +22,13 @@ import java.util.concurrent.TimeoutException;
 public class StockController {
 	private final StockService stockService;
 
-	@GetMapping("update")
+	@GetMapping("/update")
 	public List<StockDto> updateStocksFromUpbitAsync() throws ExecutionException, InterruptedException, TimeoutException {
 		return stockService.updateStocksFromBybitAsync().get(5, TimeUnit.SECONDS);
 	}
 
-
+	@GetMapping("/{symbol}")
+	public BigDecimal getStockPrice(String symbol) {
+		return stockService.getStockPrice(symbol);
+	}
 }

@@ -38,9 +38,9 @@ public class BuyOrderService {
      * 주문 생성
      */
     @Transactional
-    public void createBuyOrder(BuyOrderRequest buyOrderRequest){
+    public BuyOrderDto createBuyOrder(BuyOrderRequest buyOrderRequest){
         BuyOrder order = BuyOrder.builder()
-                .stock(stockRepository.getReferenceById(buyOrderRequest.getCode()))
+                .stock(stockRepository.getReferenceById(buyOrderRequest.getSymbol()))
                 .account(accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber()))
                 .orderType(buyOrderRequest.getOrderType())
                 .price(buyOrderRequest.getPrice())
@@ -51,7 +51,9 @@ public class BuyOrderService {
                 .remainingQuantity(buyOrderRequest.getQuantity())
                 .build();
 
-        buyOrderRepository.save(order);
+        BuyOrder saveOrder = buyOrderRepository.save(order);
+
+        return BuyOrderDto.fromEntity(saveOrder);
     }
 
     /**
