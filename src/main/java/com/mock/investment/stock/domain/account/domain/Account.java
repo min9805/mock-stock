@@ -4,6 +4,7 @@ import com.mock.investment.stock.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Random;
 
 @Entity
@@ -49,4 +50,8 @@ public class Account {
 
 		return sb.toString();
 	}
+
+    public void buyByUSD(BigDecimal multiply) {
+		this.usdBalance -= multiply.doubleValue();
+    }
 }

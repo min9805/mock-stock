@@ -12,7 +12,7 @@ public class HoldingStockService {
     /**
      * 보유 주식 조회
      */
-    public void getHoldingStocks(Long userId) {
-        holdingStockRepository.findByUserId(userId);
+    public void getHoldingStocks(String accountNumber) {
+        holdingStockRepository.findByAccount_AccountNumber(accountNumber);
     }
 }

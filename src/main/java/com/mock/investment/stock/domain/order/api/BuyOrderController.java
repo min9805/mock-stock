@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuyOrderController {
     private final BuyOrderService buyOrderService;
 
-    @PostMapping
+    @PostMapping("/market")
     public BuyOrderDto createBuyOrder(
             @RequestBody BuyOrderRequest buyOrderRequest
     ){
-        return buyOrderService.createBuyOrder(buyOrderRequest);
+        return buyOrderService.createMarketBuyOrder(buyOrderRequest);
     }
 }
