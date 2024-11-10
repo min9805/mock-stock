@@ -5,6 +5,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 public class HoldingStockDto {
@@ -17,11 +19,5 @@ public class HoldingStockDto {
     private int quantity;
 
     @PositiveOrZero
-    private double avgPrice;
-
-    @NotBlank
-    private String koreanName;
-
-    @NotBlank
-    private String englishName;
+    private BigDecimal avgPrice;
 }

@@ -55,15 +55,15 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
                 .stock(stockRepository.getReferenceById(buyOrderRequest.getSymbol()))
                 .account(account)
                 .orderType(buyOrderRequest.getOrderType())
-                .price(currentPrice.doubleValue())
+                .price(currentPrice)
                 .quantity(buyOrderRequest.getQuantity())
 
                 .orderStatus(OrderStatus.COMPLETED)
                 .filledQuantity(buyOrderRequest.getQuantity())
-                .remainingQuantity(0.0)
+                .remainingQuantity(BigDecimal.valueOf(0.0))
                 .build();
 
-        account.buyByUSD(currentPrice.multiply(BigDecimal.valueOf(buyOrderRequest.getQuantity())));
+        account.buyByUSD(currentPrice.multiply(buyOrderRequest.getQuantity()));
 
         holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(buyOrderRequest.getAccountNumber(), buyOrderRequest.getSymbol())
             .ifPresentOrElse(

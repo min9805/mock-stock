@@ -6,6 +6,8 @@ import com.mock.investment.stock.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "holding_stocks")
 @Getter
@@ -25,13 +27,13 @@ public class HoldingStock extends BaseEntity {
     @JoinColumn(name = "code")
     private Stock stock;
 
-    private Double quantity;
+    private BigDecimal quantity;
 
-    private Double avgPrice;
+    private BigDecimal avgPrice;
 
-    public void addQuantity(Double quantity) {
-        this.quantity += quantity;
+    public void addQuantity(BigDecimal amount) {
+        this.quantity = this.quantity.add(amount);
     }
 
-    public void subtractQuantity(Double quantity) { this.quantity -= quantity;}
+    public void subtractQuantity(BigDecimal amount) { this.quantity = this.quantity.subtract(amount);}
 }

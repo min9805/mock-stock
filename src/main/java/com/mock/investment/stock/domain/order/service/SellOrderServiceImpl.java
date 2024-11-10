@@ -62,20 +62,20 @@ public class SellOrderServiceImpl implements OrderService<SellOrderRequest, Sell
                 .stock(stockRepository.getReferenceById(SellOrderRequest.getSymbol()))
                 .account(account)
                 .orderType(SellOrderRequest.getOrderType())
-                .price(currentPrice.doubleValue())
+                .price(currentPrice)
                 .quantity(SellOrderRequest.getQuantity())
 
                 .orderStatus(OrderStatus.COMPLETED)
                 .filledQuantity(SellOrderRequest.getQuantity())
-                .remainingQuantity(0.0)
+                .remainingQuantity(BigDecimal.valueOf(0.0))
                 .build();
 
         // 매도 수수료 처리
-        Double sellFee = order.calculateFee();
+        BigDecimal sellFee = order.calculateFee();
 
         account.SellByUSD(
-                currentPrice.multiply(BigDecimal.valueOf(SellOrderRequest.getQuantity()))
-                        .subtract(BigDecimal.valueOf(sellFee))
+                currentPrice.multiply(SellOrderRequest.getQuantity())
+                        .subtract(sellFee)
         );
 
         accountRepository.save(account);
@@ -86,7 +86,7 @@ public class SellOrderServiceImpl implements OrderService<SellOrderRequest, Sell
 
 
     private void updateExistingHoldingStock(HoldingStock holdingStock, SellOrderRequest SellOrderRequest) {
-        if (holdingStock.getQuantity() < SellOrderRequest.getQuantity()) {
+        if (holdingStock.getQuantity().compareTo(SellOrderRequest.getQuantity()) < 0) {
             throw new InvalidOrderToSellException("Trying to sell more than holding quantity");
         }
 

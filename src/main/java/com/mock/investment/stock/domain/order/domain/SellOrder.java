@@ -14,12 +14,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SellOrder extends Order {
-    public static final Double DEFAULT_FEE_RATE = 0.001;
+    public static final BigDecimal DEFAULT_FEE_RATE = new BigDecimal("0.00015");
 
     @Comment("매도 주문 수수료")
-    private Double fee;
+    private BigDecimal fee;
 
-    public SellOrder createModifiedOrder(SellOrder sellOrder, Double price) {
+    public SellOrder createModifiedOrder(SellOrder sellOrder, BigDecimal price) {
         return SellOrder.builder()
                 .stock(sellOrder.getStock())
                 .account(sellOrder.getAccount())
@@ -27,13 +27,13 @@ public class SellOrder extends Order {
                 .price(price)
                 .quantity(sellOrder.getRemainingQuantity())
                 .orderStatus(OrderStatus.PENDING)
-                .filledQuantity(0.0)
+                .filledQuantity(BigDecimal.valueOf(0.0))
                 .remainingQuantity(sellOrder.getRemainingQuantity())
                 .fee(sellOrder.getFee())
                 .build();
     }
 
-    public Double calculateFee() {
-        return super.getPrice() * super.getFilledQuantity() * DEFAULT_FEE_RATE;
+    public BigDecimal calculateFee() {
+        return DEFAULT_FEE_RATE.multiply(this.getPrice()).multiply(this.getFilledQuantity());
     }
 }

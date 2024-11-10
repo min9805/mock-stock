@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -25,7 +26,7 @@ public class Order {
 
     @PositiveOrZero
     @Comment("주문 수량")
-    private Double quantity;
+    private BigDecimal quantity;
 
     @Comment("주문 상태")
     private OrderStatus orderStatus;
@@ -34,18 +35,18 @@ public class Order {
     private OrderType orderType;
 
     @Comment("주문 가격")
-    private Double price;
+    private BigDecimal price;
 
     @PositiveOrZero
     @Comment("체결 수량")
-    private Double filledQuantity;
+    private BigDecimal filledQuantity;
 
     @PositiveOrZero
     @Comment("주문 남은 수량")
-    private Double remainingQuantity;
+    private BigDecimal remainingQuantity;
 
     @Comment("체결 가격")
-    private Double executedPrice;
+    private BigDecimal executedPrice;
 
     @Comment("주문 만료 시간")
     private LocalDateTime expireAt;

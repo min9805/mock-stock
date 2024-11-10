@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -15,13 +16,13 @@ public class SimpleAccountDto {
 	private String accountNumber;
 
 	@PositiveOrZero
-	private Double krwBalance;
+	private BigDecimal krwBalance;
 
 	@PositiveOrZero
-	private Double usdBalance;
+	private BigDecimal usdBalance;
 
 	@PositiveOrZero
-	private Double bitcoinBalance;
+	private BigDecimal bitcoinBalance;
 
 	static public SimpleAccountDto fromEntity(Account account) {
 		return SimpleAccountDto.builder()

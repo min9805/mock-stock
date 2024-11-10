@@ -25,17 +25,17 @@ public class Account {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Double krwBalance;
+	private BigDecimal krwBalance;
 
-	private Double usdBalance;
+	private BigDecimal usdBalance;
 
-	private Double bitcoinBalance;
+	private BigDecimal bitcoinBalance;
 
 	public void createAccount() {
 		this.accountNumber = generatedAccountNumber();
-		this.krwBalance = 0.0;
-		this.usdBalance = 1000000.0;
-		this.bitcoinBalance = 0.0;
+		this.krwBalance = BigDecimal.valueOf(3000000);
+		this.usdBalance = BigDecimal.valueOf(10000000);
+		this.bitcoinBalance = BigDecimal.valueOf(5);
 	}
 
 	// TODO: 계좌 번호 생성 중복 시 처리
@@ -51,9 +51,11 @@ public class Account {
 		return sb.toString();
 	}
 
-    public void buyByUSD(BigDecimal multiply) {
-		this.usdBalance -= multiply.doubleValue();
-    }
+	public void buyByUSD(BigDecimal amount) {
+		this.usdBalance = this.usdBalance.subtract(amount);
+	}
 
-    public void SellByUSD(BigDecimal multiply) { this.usdBalance += multiply.doubleValue();}
+    public void SellByUSD(BigDecimal multiply) {
+		this.usdBalance = this.usdBalance.add(multiply);
+	}
 }

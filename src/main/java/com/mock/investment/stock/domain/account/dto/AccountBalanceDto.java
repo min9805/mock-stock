@@ -6,6 +6,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * DTO for {@link com.mock.investment.stock.domain.account.domain.Account}
  */
@@ -16,13 +18,13 @@ public class AccountBalanceDto {
 	String accountNumber;
 
 	@PositiveOrZero
-	Double krwBalance;
+	BigDecimal krwBalance;
 
 	@PositiveOrZero
-	Double usdBalance;
+	BigDecimal usdBalance;
 
 	@PositiveOrZero
-	Double bitcoinBalance;
+	BigDecimal bitcoinBalance;
 
 	public static AccountBalanceDto fromEntity(Account account) {
 		return AccountBalanceDto.builder()

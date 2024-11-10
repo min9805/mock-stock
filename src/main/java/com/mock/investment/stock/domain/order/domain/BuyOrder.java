@@ -10,6 +10,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BuyOrder extends Order {
 
-    public BuyOrder createModifiedOrder(BuyOrder order, double newPrice){
+    public BuyOrder createModifiedOrder(BuyOrder order, BigDecimal newPrice){
         return BuyOrder.builder()
                 .stock(order.getStock())
                 .account(order.getAccount())
@@ -27,7 +28,7 @@ public class BuyOrder extends Order {
                 .price(newPrice)
                 .quantity(order.getRemainingQuantity())
                 .orderStatus(OrderStatus.PENDING)
-                .filledQuantity(0.0)
+                .filledQuantity(BigDecimal.valueOf(0.0))
                 .remainingQuantity(order.getRemainingQuantity())
                 .build();
     }
