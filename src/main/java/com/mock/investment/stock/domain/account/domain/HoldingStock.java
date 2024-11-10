@@ -32,4 +32,6 @@ public class HoldingStock extends BaseEntity {
     public void addQuantity(Double quantity) {
         this.quantity += quantity;
     }
+
+    public void subtractQuantity(Double quantity) { this.quantity -= quantity;}
 }

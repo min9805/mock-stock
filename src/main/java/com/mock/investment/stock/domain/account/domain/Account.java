@@ -54,4 +54,6 @@ public class Account {
     public void buyByUSD(BigDecimal multiply) {
 		this.usdBalance -= multiply.doubleValue();
     }
+
+    public void SellByUSD(BigDecimal multiply) { this.usdBalance += multiply.doubleValue();}
 }
