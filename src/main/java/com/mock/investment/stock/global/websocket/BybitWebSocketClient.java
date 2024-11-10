@@ -34,8 +34,17 @@ public class BybitWebSocketClient {
                 public void afterConnectionEstablished(WebSocketSession session) {
                     log.info("Connected to Bybit WebSocket");
                     // 구독 메시지 전송
-                    String subscribeMessage = "{\"op\":\"subscribe\",\"args\":[\"tickers.BTCUSDT\"]}";
-                    try {
+                    String subscribeMessage = "{" +
+                            "\"op\":\"subscribe\"," +
+                            "\"args\":[" +
+                            "\"tickers.BTCUSDT\"," +
+                            "\"tickers.ETHUSDT\"," +
+                            "\"tickers.SOLUSDT\"," +
+                            "\"tickers.BNBUSDT\"," +
+                            "\"tickers.BTCUSDC\"," +
+                            "\"tickers.ETHUSDC\"" +
+                            "]" +
+                            "}";                    try {
                         session.sendMessage(new TextMessage(subscribeMessage));
                     } catch (IOException e) {
                         log.error("Subscription failed", e);
@@ -59,7 +68,7 @@ public class BybitWebSocketClient {
                         if (jsonNode.has("data")) {
                             JsonNode data = jsonNode.get("data");
                             String lastPrice = data.get("lastPrice").asText();
-                            priceHolder.updatePrice("BTCUSDT", new BigDecimal(lastPrice));
+                            priceHolder.updatePrice(data.get("symbol").asText(), new BigDecimal(lastPrice));
                             log.debug("Price updated: {}", lastPrice);
                         }
                     } catch (Exception e) {

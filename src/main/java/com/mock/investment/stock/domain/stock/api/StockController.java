@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -27,8 +28,13 @@ public class StockController {
 		return stockService.updateStocksFromBybitAsync().get(5, TimeUnit.SECONDS);
 	}
 
-	@GetMapping("/{symbol}")
+	@GetMapping("/price/{symbol}")
 	public BigDecimal getStockPrice(String symbol) {
 		return stockService.getStockPrice(symbol);
+	}
+
+	@GetMapping("/prices")
+	public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
+		return stockService.getCurrentPrices();
 	}
 }

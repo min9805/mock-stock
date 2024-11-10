@@ -17,4 +17,8 @@ public class PriceHolder {
     public BigDecimal getCurrentPrice(String symbol) {
         return currentPrices.get(symbol);
     }
+
+    public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
+        return currentPrices;
+    }
 }

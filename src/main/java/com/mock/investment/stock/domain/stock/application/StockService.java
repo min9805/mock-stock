@@ -26,6 +26,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,4 +85,8 @@ public class StockService {
     public BigDecimal getStockPrice(String symbol) {
 		return priceHolder.getCurrentPrice(symbol);
     }
+
+	public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
+		return priceHolder.getCurrentPrices();
+	}
 }
