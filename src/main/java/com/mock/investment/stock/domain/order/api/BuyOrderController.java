@@ -19,13 +19,13 @@ public class BuyOrderController {
     public BuyOrderDto createBuyOrder(
             @RequestBody BuyOrderRequest buyOrderRequest
     ){
-        return buyOrderService.createMarketBuyOrder(buyOrderRequest);
+        return buyOrderService.createMarketOrder(buyOrderRequest);
     }
 
     @GetMapping("/")
     public List<BuyOrderDto> getBuyOrders(
             @RequestBody OrderRequest orderRequest
     ){
-        return buyOrderService.getBuyOrders(orderRequest);
+        return buyOrderService.getOrders(orderRequest);
     }
 }

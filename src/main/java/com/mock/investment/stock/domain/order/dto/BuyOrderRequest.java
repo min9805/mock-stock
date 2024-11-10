@@ -9,15 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BuyOrderRequest {
-    @NotBlank
-    @Schema(description = "주식 코드", example = "BTCUSDT")
-    private String symbol;
-
-    @NotBlank
-    @Schema(description = "계좌 번호", example = "1234-1234-12")
-    private String accountNumber;
-
+public class BuyOrderRequest extends OrderRequest{
     @Positive
     @Schema(description = "주문 수량", example = "10")
     private Double quantity;

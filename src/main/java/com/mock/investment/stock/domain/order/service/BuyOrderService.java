@@ -7,10 +7,7 @@ import com.mock.investment.stock.domain.account.domain.HoldingStock;
 import com.mock.investment.stock.domain.order.dao.BuyOrderRepository;
 import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.domain.OrderStatus;
-import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
-import com.mock.investment.stock.domain.order.dto.BuyOrderModifyRequest;
-import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
-import com.mock.investment.stock.domain.order.dto.OrderRequest;
+import com.mock.investment.stock.domain.order.dto.*;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.global.websocket.PriceHolder;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BuyOrderService {
+public class BuyOrderService implements OrderService<BuyOrderRequest, BuyOrderDto> {
     private final BuyOrderRepository buyOrderRepository;
     private final StockRepository stockRepository;
     private final AccountRepository accountRepository;
@@ -34,19 +31,22 @@ public class BuyOrderService {
     /**
      * 매수 주문 조회
      */
-    public List<BuyOrderDto> getBuyOrders(OrderRequest orderRequest){
-        List<BuyOrder> buyOrders = buyOrderRepository.findByAccount_AccountNumberAndStockSymbol(orderRequest.getAccountNumber(), orderRequest.getCoinSymbol());
+    @Override
+    public List<BuyOrderDto> getOrders(OrderRequest orderRequest){
+        List<BuyOrder> buyOrders = buyOrderRepository.findByAccount_AccountNumberAndStockSymbol(orderRequest.getAccountNumber(), orderRequest.getSymbol());
 
         return buyOrders.stream()
                 .map(BuyOrderDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
+
     /**
      * 주문 생성 - 시장가 주문
      */
     @Transactional
-    public BuyOrderDto createMarketBuyOrder(BuyOrderRequest buyOrderRequest){
+    @Override
+    public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
         BigDecimal currentPrice = priceHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
         Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
@@ -95,7 +95,7 @@ public class BuyOrderService {
      * 주문 취소
      */
     @Transactional
-    public void cancelBuyOrder(Long buyOrderId){
+    public void cancelOrder(Long buyOrderId){
         BuyOrder buyOrder = buyOrderRepository.findById(buyOrderId).orElseThrow();
 
         //주문 취소 - 실패 시 예외 발생
@@ -105,11 +105,16 @@ public class BuyOrderService {
         // TODO 주문 취소 시스템에 적용
     }
 
+    @Override
+    public void modifyOrder(Object modifyRequest) {
+
+    }
+
     /**
      * 주문 수정 - 주문 취소 후 새로운 주문 생성
      */
     @Transactional
-    public void modifyBuyOrder(BuyOrderModifyRequest buyOrderRequest){
+    public void modifyOrder(BuyOrderModifyRequest buyOrderRequest){
         BuyOrder buyOrder = buyOrderRepository.findById(buyOrderRequest.getOrderId()).orElseThrow();
 
         //주문 취소 - 실패 시 예외 발생
