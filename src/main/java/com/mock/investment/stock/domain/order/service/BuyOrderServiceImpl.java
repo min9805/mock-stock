@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BuyOrderService implements OrderService<BuyOrderRequest, BuyOrderDto> {
+public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrderDto> {
     private final BuyOrderRepository buyOrderRepository;
     private final StockRepository stockRepository;
     private final AccountRepository accountRepository;
@@ -105,23 +105,19 @@ public class BuyOrderService implements OrderService<BuyOrderRequest, BuyOrderDt
         // TODO 주문 취소 시스템에 적용
     }
 
-    @Override
-    public void modifyOrder(Object modifyRequest) {
-
-    }
-
     /**
      * 주문 수정 - 주문 취소 후 새로운 주문 생성
      */
     @Transactional
-    public void modifyOrder(BuyOrderModifyRequest buyOrderRequest){
-        BuyOrder buyOrder = buyOrderRepository.findById(buyOrderRequest.getOrderId()).orElseThrow();
+    @Override
+    public void modifyOrder(OrderModifyRequest orderModifyRequest){
+        BuyOrder buyOrder = buyOrderRepository.findById(orderModifyRequest.getOrderId()).orElseThrow();
 
         //주문 취소 - 실패 시 예외 발생
         buyOrder.cancel();
 
         //새로운 주문 생성
-        BuyOrder newOrder = buyOrder.createModifiedOrder(buyOrder, buyOrderRequest.getPrice());
+        BuyOrder newOrder = buyOrder.createModifiedOrder(buyOrder, orderModifyRequest.getPrice());
 
         buyOrderRepository.save(buyOrder);
         buyOrderRepository.save(newOrder);

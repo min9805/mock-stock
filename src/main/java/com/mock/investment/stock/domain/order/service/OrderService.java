@@ -1,9 +1,6 @@
 package com.mock.investment.stock.domain.order.service;
 
-import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
-import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
-import com.mock.investment.stock.domain.order.dto.OrderDto;
-import com.mock.investment.stock.domain.order.dto.OrderRequest;
+import com.mock.investment.stock.domain.order.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,5 +25,5 @@ public interface OrderService<T extends OrderRequest, R extends OrderDto> {
     /**
      * 주문 수정
      */
-    void modifyOrder(Object modifyRequest);
+    void modifyOrder(OrderModifyRequest modifyRequest);
 }
