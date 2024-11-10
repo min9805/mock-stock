@@ -2,12 +2,12 @@ package com.mock.investment.stock.domain.order.api;
 
 import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
 import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
+import com.mock.investment.stock.domain.order.dto.OrderRequest;
 import com.mock.investment.stock.domain.order.service.BuyOrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/order/buy")
@@ -20,5 +20,12 @@ public class BuyOrderController {
             @RequestBody BuyOrderRequest buyOrderRequest
     ){
         return buyOrderService.createMarketBuyOrder(buyOrderRequest);
+    }
+
+    @GetMapping("/")
+    public List<BuyOrderDto> getBuyOrders(
+            @RequestBody OrderRequest orderRequest
+    ){
+        return buyOrderService.getBuyOrders(orderRequest);
     }
 }
