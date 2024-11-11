@@ -13,6 +13,7 @@ import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
 import com.mock.investment.stock.domain.stock.exception.UpbitAPIException;
 import com.mock.investment.stock.global.websocket.PriceHolder;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,11 @@ public class StockService {
 
 	private final PriceHolder priceHolder;
 	private final HttpClient httpClient;
+
+	@PostConstruct
+	public void init() {
+		updateStocksFromBybitAsync();
+	}
 
 	public CompletableFuture<List<StockDto>> updateStocksFromBybitAsync() {
 		HttpRequest request = HttpRequest.newBuilder()
