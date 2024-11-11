@@ -2,7 +2,10 @@ package com.mock.investment.stock.domain.account.application;
 
 import com.mock.investment.stock.domain.account.dao.AccountRepository;
 import com.mock.investment.stock.domain.account.domain.Account;
+import com.mock.investment.stock.domain.account.domain.HoldingStock;
 import com.mock.investment.stock.domain.account.dto.AccountBalanceDto;
+import com.mock.investment.stock.domain.account.dto.HoldingStockDto;
+import com.mock.investment.stock.domain.account.dto.HoldingStocksRequest;
 import com.mock.investment.stock.domain.account.dto.SimpleAccountDto;
 import com.mock.investment.stock.domain.account.exception.AccountAlreadyExistsException;
 import com.mock.investment.stock.domain.account.exception.AccountNotFoundException;
@@ -42,5 +45,15 @@ public class AccountService {
 		accountRepository.save(account);
 
 		return SimpleAccountDto.fromEntity(account);
+	}
+
+	/**
+	 * 보유 종목 조회
+	 */
+	public List<HoldingStockDto> getHoldingStocks(HoldingStocksRequest holdingStocksRequest) {
+		List<HoldingStock> holdingStocks = accountRepository.findByAccountNumber(holdingStocksRequest.getAccountNumber())
+				.getHoldingStocks();
+
+		return HoldingStockDto.fromEntities(holdingStocks);
 	}
 }

@@ -7,7 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HoldingStockRepository extends JpaRepository<HoldingStock, Long> {
-    List<HoldingStock> findByAccount_AccountNumber(String accountNumber);
-
     Optional<Object> findByAccount_AccountNumberAndStockSymbol(String accountNumber, String symbol);
 }
