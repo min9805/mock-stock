@@ -39,9 +39,14 @@ spring:
   sql:
     init:
       mode: always
-
   data:
     mongodb:
-      uri: mongodb://root:root_password@localhost:27017/stock?authSource=admin
+        host: localhost
+        port: 27018
+        database: stock
+        username: admin
+        password: admin_password
+        authentication-database: admin
+
 
 

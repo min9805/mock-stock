@@ -4,7 +4,7 @@ services:
     ports:
       - 13306:3306
     volumes:
-      - ${DB_INIT_FILE}:/docker-entrypoint-initdb.d
+      - ${DB_INIT_DIR}/create_schema.sql:/docker-entrypoint-initdb.d/init.sql
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
@@ -16,12 +16,14 @@ services:
   mongodb:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - 27018:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root_password
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin_password
+      MONGO_INITDB_DATABASE: stock
     volumes:
       - mongodb_data:/data/db
+      - ${DB_INIT_DIR}/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     command: mongod --auth
 
   # MongoDB 관리 도구 (옵션)
@@ -30,9 +32,9 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root_password
-      ME_CONFIG_MONGODB_URL: mongodb://root:root_password@mongodb:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin_password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin_password@mongodb:27017/
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: pass
     depends_on:
