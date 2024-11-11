@@ -28,11 +28,14 @@ public class HoldingStock extends BaseEntity {
 
     private BigDecimal quantity;
 
-    private BigDecimal avgPrice;
+    private Double avgPrice;
 
-    public void addQuantity(BigDecimal amount) {
+    public void addQuantity(BigDecimal amount, BigDecimal currentPrice) {
         this.quantity = this.quantity.add(amount);
+        this.avgPrice = (this.avgPrice * this.quantity.doubleValue() + currentPrice.doubleValue() * amount.doubleValue()) / (this.quantity.doubleValue() + amount.doubleValue());
     }
 
-    public void subtractQuantity(BigDecimal amount) { this.quantity = this.quantity.subtract(amount);}
+    public void subtractQuantity(BigDecimal amount) {
+        this.quantity = this.quantity.subtract(amount);
+    }
 }

@@ -19,7 +19,7 @@ public class HoldingStockDto {
     private BigDecimal quantity;
 
     @PositiveOrZero
-    private BigDecimal avgPrice;
+    private Double avgPrice;
 
     public static List<HoldingStockDto> fromEntities(List<HoldingStock> holdingStocks) {
         return holdingStocks.stream()

@@ -67,8 +67,8 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
 
         holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(buyOrderRequest.getAccountNumber(), buyOrderRequest.getSymbol())
             .ifPresentOrElse(
-                    holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, buyOrderRequest),
-                    () -> createNewHoldingStock(account, buyOrderRequest)
+                    holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, buyOrderRequest, currentPrice),
+                    () -> createNewHoldingStock(account, buyOrderRequest, currentPrice)
             );
 
         accountRepository.save(account);
@@ -78,15 +78,16 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
     }
 
 
-    private void updateExistingHoldingStock(HoldingStock holdingStock, BuyOrderRequest buyOrderRequest) {
-        holdingStock.addQuantity(buyOrderRequest.getQuantity());
+    private void updateExistingHoldingStock(HoldingStock holdingStock, BuyOrderRequest buyOrderRequest, BigDecimal currentPrice) {
+        holdingStock.addQuantity(buyOrderRequest.getQuantity(), currentPrice);
     }
 
-    private void createNewHoldingStock(Account account, BuyOrderRequest buyOrderRequest) {
+    private void createNewHoldingStock(Account account, BuyOrderRequest buyOrderRequest, BigDecimal currentPrice) {
         HoldingStock newHoldingStock = HoldingStock.builder()
                 .account(account)
                 .stock(stockRepository.getReferenceById(buyOrderRequest.getSymbol()))
                 .quantity(buyOrderRequest.getQuantity())
+                .avgPrice(currentPrice.doubleValue())
                 .build();
         holdingStockRepository.save(newHoldingStock);
     }
