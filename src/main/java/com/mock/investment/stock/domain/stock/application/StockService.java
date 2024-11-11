@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -94,5 +95,15 @@ public class StockService {
 
 	public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
 		return priceHolder.getCurrentPrices();
+	}
+
+	/**
+	 * 주어진 baseCoin에 해당하는 Stock 목록을 반환한다.
+	 */
+	public List<StockDto> getStockList(String quoteCoin) {
+		Collection<Stock> stocks = stockRepository.findByQuoteCoin(quoteCoin);
+		return stocks.stream()
+				.map(StockDto::fromEntity)
+				.collect(Collectors.toList());
 	}
 }

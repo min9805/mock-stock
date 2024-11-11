@@ -1,11 +1,11 @@
 package com.mock.investment.stock.domain.stock.api;
 
 import com.mock.investment.stock.domain.stock.application.StockService;
-import com.mock.investment.stock.domain.stock.domain.Stock;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,5 +36,10 @@ public class StockController {
 	@GetMapping("/prices")
 	public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
 		return stockService.getCurrentPrices();
+	}
+
+	@GetMapping("/list/{quoteCoin}")
+	public List<StockDto> getStockList(@PathVariable String quoteCoin) {
+		return stockService.getStockList(quoteCoin);
 	}
 }
