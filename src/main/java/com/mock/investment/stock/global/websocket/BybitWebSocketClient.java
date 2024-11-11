@@ -68,7 +68,7 @@ public class BybitWebSocketClient {
                         if (jsonNode.has("data")) {
                             JsonNode data = jsonNode.get("data");
                             String lastPrice = data.get("lastPrice").asText();
-                            stockInfoHolder.updatePrice(data.get("symbol").asText(), new BigDecimal(lastPrice));
+                            stockInfoHolder.updatePrice(data);
                             log.debug("Price updated: {}", lastPrice);
                         }
                     } catch (Exception e) {
