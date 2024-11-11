@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.Random;
 public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long accountId;
+	private Long id;
 
 	@Column(unique = true)
 	private String accountNumber;
@@ -30,6 +31,9 @@ public class Account {
 	private BigDecimal usdBalance;
 
 	private BigDecimal bitcoinBalance;
+
+	@OneToMany(mappedBy = "account")
+	private List<HoldingStock> holdingStocks;
 
 	public void createAccount() {
 		this.accountNumber = generatedAccountNumber();

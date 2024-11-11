@@ -1,7 +1,6 @@
 package com.mock.investment.stock.domain.account.domain;
 
 import com.mock.investment.stock.domain.stock.domain.Stock;
-import com.mock.investment.stock.domain.user.domain.User;
 import com.mock.investment.stock.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,14 +16,14 @@ import java.math.BigDecimal;
 public class HoldingStock extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long holding_stock_id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code")
+    @JoinColumn(name = "symbol")
     private Stock stock;
 
     private BigDecimal quantity;
