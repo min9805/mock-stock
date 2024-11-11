@@ -1,18 +1,15 @@
 package com.mock.investment.stock.domain.stock.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mock.investment.stock.domain.stock.dao.StockBulkRepository;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.domain.stock.domain.Stock;
-import com.mock.investment.stock.domain.stock.dto.BybitResponse;
 import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromBybit;
-import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromUpbit;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
 import com.mock.investment.stock.domain.stock.exception.UpbitAPIException;
-import com.mock.investment.stock.global.websocket.PriceHolder;
+import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +35,7 @@ public class StockService {
 	private final StockRepository stockRepository;
 	private final StockBulkRepository stockBulkRepository;
 
-	private final PriceHolder priceHolder;
+	private final StockInfoHolder stockInfoHolder;
 	private final HttpClient httpClient;
 
 	@PostConstruct
@@ -90,11 +87,11 @@ public class StockService {
 	}
 
     public BigDecimal getStockPrice(String symbol) {
-		return priceHolder.getCurrentPrice(symbol);
+		return stockInfoHolder.getCurrentPrice(symbol);
     }
 
 	public ConcurrentHashMap<String, BigDecimal> getCurrentPrices() {
-		return priceHolder.getCurrentPrices();
+		return stockInfoHolder.getCurrentPrices();
 	}
 
 	/**

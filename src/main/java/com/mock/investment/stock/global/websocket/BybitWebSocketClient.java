@@ -23,7 +23,7 @@ public class BybitWebSocketClient {
     private WebSocketClient client;
     private WebSocketSession session;
     private final ObjectMapper objectMapper;
-    private final PriceHolder priceHolder;
+    private final StockInfoHolder stockInfoHolder;
 
     @PostConstruct
     public void connect() {
@@ -68,7 +68,7 @@ public class BybitWebSocketClient {
                         if (jsonNode.has("data")) {
                             JsonNode data = jsonNode.get("data");
                             String lastPrice = data.get("lastPrice").asText();
-                            priceHolder.updatePrice(data.get("symbol").asText(), new BigDecimal(lastPrice));
+                            stockInfoHolder.updatePrice(data.get("symbol").asText(), new BigDecimal(lastPrice));
                             log.debug("Price updated: {}", lastPrice);
                         }
                     } catch (Exception e) {

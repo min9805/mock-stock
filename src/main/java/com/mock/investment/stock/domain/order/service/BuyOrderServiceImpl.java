@@ -9,7 +9,7 @@ import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.domain.OrderStatus;
 import com.mock.investment.stock.domain.order.dto.*;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
-import com.mock.investment.stock.global.websocket.PriceHolder;
+import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
     private final StockRepository stockRepository;
     private final AccountRepository accountRepository;
 
-    private final PriceHolder priceHolder;
+    private final StockInfoHolder stockInfoHolder;
     private final HoldingStockRepository holdingStockRepository;
 
     /**
@@ -47,7 +47,7 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
     @Transactional
     @Override
     public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
-        BigDecimal currentPrice = priceHolder.getCurrentPrice(buyOrderRequest.getSymbol());
+        BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
         Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
 
