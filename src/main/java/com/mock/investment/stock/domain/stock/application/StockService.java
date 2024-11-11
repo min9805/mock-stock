@@ -4,15 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mock.investment.stock.domain.stock.dao.StockBulkRepository;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
+import com.mock.investment.stock.domain.stock.dao.StockTickRepository;
+import com.mock.investment.stock.domain.stock.dao.StockTickRepositoryImpl;
 import com.mock.investment.stock.domain.stock.domain.Stock;
+import com.mock.investment.stock.domain.stock.domain.StockTick;
 import com.mock.investment.stock.domain.stock.dto.StockCodeRequestFromBybit;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
+import com.mock.investment.stock.domain.stock.dto.StockTickDto;
+import com.mock.investment.stock.domain.stock.dto.StockTickPageResponse;
 import com.mock.investment.stock.domain.stock.exception.InvalidStockCodeRequestException;
 import com.mock.investment.stock.domain.stock.exception.UpbitAPIException;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +42,8 @@ import java.util.stream.Collectors;
 public class StockService {
 	private final StockRepository stockRepository;
 	private final StockBulkRepository stockBulkRepository;
+	private final StockTickRepositoryImpl stockTickRepositoryImpl;
+	private final StockTickRepository stockTickRepository;
 
 	private final StockInfoHolder stockInfoHolder;
 	private final HttpClient httpClient;
@@ -102,5 +112,11 @@ public class StockService {
 		return stocks.stream()
 				.map(StockDto::fromEntity)
 				.collect(Collectors.toList());
+	}
+
+	public StockTickPageResponse<StockTickDto> getQuoteStocksOrderByTurnover(String quoteCoin, int page, int size) {
+		Pageable pageable = Pageable.ofSize(size).withPage(page);
+		String pattern = ".*" + quoteCoin + "$";
+		return stockTickRepositoryImpl.findLatestQuoteStocksOrderByTurnover(pattern, pageable);
 	}
 }
