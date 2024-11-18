@@ -116,7 +116,6 @@ public class StockService {
 
 	public StockTickPageResponse<StockTickDto> getQuoteStocksOrderByTurnover(String quoteCoin, int page, int size) {
 		Pageable pageable = Pageable.ofSize(size).withPage(page);
-		String pattern = ".*" + quoteCoin + "$";
-		return stockTickRepositoryImpl.findLatestQuoteStocksOrderByTurnover(pattern, pageable);
+		return stockTickRepositoryImpl.findLatestQuoteStocksOrderByTurnover(quoteCoin, pageable);
 	}
 }

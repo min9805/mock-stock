@@ -44,6 +44,7 @@ public class StockController {
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size
 	) {
-		return stockService.getQuoteStocksOrderByTurnover(quoteCoin, page, size);
+		String quote = quoteCoin.equals("All") ? "" : quoteCoin;
+		return stockService.getQuoteStocksOrderByTurnover(quote, page, size);
 	}
 }
