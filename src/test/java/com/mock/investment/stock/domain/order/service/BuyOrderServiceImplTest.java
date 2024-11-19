@@ -9,6 +9,8 @@ import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
 import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +20,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,6 +36,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.yml")
+@Slf4j
 class BuyOrderServiceConcurrencyTest {
 
     @Autowired
@@ -53,6 +60,8 @@ class BuyOrderServiceConcurrencyTest {
     private static final BigDecimal STOCK_PRICE = BigDecimal.valueOf(100.00);
     private static final int CONCURRENT_USERS = 30;
     private static final BigDecimal ORDER_QUANTITY = BigDecimal.ONE;
+    @Autowired
+    private HikariDataSource dataSource;
 
     @BeforeEach
     @Transactional
@@ -92,6 +101,21 @@ class BuyOrderServiceConcurrencyTest {
                             .build();
 
                     return buyOrderService.createMarketOrder(request);
+                } catch (Exception e) {
+                    // 기존 로깅 유지
+                    log.error("Error occurred during order creation", e);
+
+                    // 데드락 상세 정보 조회 추가
+                    try (Connection conn = dataSource.getConnection();
+                         Statement st = conn.createStatement();
+                         ResultSet rs = st.executeQuery("SHOW ENGINE INNODB STATUS")) {
+                        if (rs.next()) {
+                            log.error("InnoDB Status at time of deadlock:\n{}", rs.getString("Status"));
+                        }
+                    } catch (SQLException ex) {
+                        log.error("Failed to get InnoDB status", ex);
+                    }
+                    return null;
                 } finally {
                     latch.countDown();
                 }
@@ -119,7 +143,7 @@ class BuyOrderServiceConcurrencyTest {
 
         // 3. 보유 주식 수량이 정확한지 확인
         HoldingStock holdingStock = holdingStockRepository
-                .findByAccount_AccountNumberAndStockSymbol(ACCOUNT_NUMBER, STOCK_SYMBOL)
+                .findFirstByAccount_AccountNumberAndStockSymbol(ACCOUNT_NUMBER, STOCK_SYMBOL)
                 .orElseThrow();
         BigDecimal expectedQuantity = ORDER_QUANTITY.multiply(BigDecimal.valueOf(numberOfThreads));
         assertThat(holdingStock.getQuantity()).isEqualByComparingTo(expectedQuantity);
