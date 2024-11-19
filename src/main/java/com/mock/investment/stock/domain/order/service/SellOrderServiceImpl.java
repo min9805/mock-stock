@@ -52,7 +52,7 @@ public class SellOrderServiceImpl implements OrderService<SellOrderRequest, Sell
 
         Account account = accountRepository.findByAccountNumberWithLock(SellOrderRequest.getAccountNumber());
 
-        holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(SellOrderRequest.getAccountNumber(), SellOrderRequest.getSymbol())
+        holdingStockRepository.findFirstByAccount_AccountNumberAndStockSymbol(SellOrderRequest.getAccountNumber(), SellOrderRequest.getSymbol())
                 .ifPresentOrElse(
                         holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, SellOrderRequest),
                         () -> { throw new InvalidOrderToSellException(SellOrderRequest.getSymbol()); }

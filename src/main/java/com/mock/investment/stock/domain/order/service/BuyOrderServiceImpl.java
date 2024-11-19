@@ -6,7 +6,6 @@ import com.mock.investment.stock.domain.account.domain.Account;
 import com.mock.investment.stock.domain.account.domain.HoldingStock;
 import com.mock.investment.stock.domain.order.dao.BuyOrderRepository;
 import com.mock.investment.stock.domain.order.domain.BuyOrder;
-import com.mock.investment.stock.domain.order.domain.OrderStatus;
 import com.mock.investment.stock.domain.order.dto.*;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
@@ -46,33 +45,25 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
      */
     @Override
     @Transactional
-    public synchronized BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
+    public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
+        // 현재 주문 금액 조회
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
+        // 계좌 조회 및 금액 차감
         Account account = accountRepository.findByAccountNumberWithLock(buyOrderRequest.getAccountNumber());
-
-        BuyOrder order = BuyOrder.builder()
-                .stock(stockRepository.getReferenceById(buyOrderRequest.getSymbol()))
-                .account(account)
-                .orderType(buyOrderRequest.getOrderType())
-                .price(currentPrice)
-                .quantity(buyOrderRequest.getQuantity())
-
-                .orderStatus(OrderStatus.COMPLETED)
-                .filledQuantity(buyOrderRequest.getQuantity())
-                .remainingQuantity(BigDecimal.valueOf(0.0))
-                .build();
-
         account.buyByUSD(currentPrice.multiply(buyOrderRequest.getQuantity()));
+        accountRepository.save(account);
 
-        holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(buyOrderRequest.getAccountNumber(), buyOrderRequest.getSymbol())
+        // 주문 생성
+        BuyOrder order = BuyOrder.of(buyOrderRequest, stockRepository.getReferenceById(buyOrderRequest.getSymbol()), account, currentPrice);
+        BuyOrder saveOrder = buyOrderRepository.save(order);
+
+        // 보유 주식 추가
+        holdingStockRepository.findFirstByAccount_AccountNumberAndStockSymbol(buyOrderRequest.getAccountNumber(), buyOrderRequest.getSymbol())
                 .ifPresentOrElse(
-                        holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, buyOrderRequest, currentPrice),
+                        holdingStock -> updateExistingHoldingStock(holdingStock, buyOrderRequest, currentPrice),
                         () -> createNewHoldingStock(account, buyOrderRequest, currentPrice)
                 );
-
-        accountRepository.save(account);
-        BuyOrder saveOrder = buyOrderRepository.save(order);
 
         return BuyOrderDto.fromEntity(saveOrder);
     }
@@ -80,6 +71,7 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
 
     private void updateExistingHoldingStock(HoldingStock holdingStock, BuyOrderRequest buyOrderRequest, BigDecimal currentPrice) {
         holdingStock.addQuantity(buyOrderRequest.getQuantity(), currentPrice);
+        holdingStockRepository.save(holdingStock);
     }
 
     private void createNewHoldingStock(Account account, BuyOrderRequest buyOrderRequest, BigDecimal currentPrice) {
