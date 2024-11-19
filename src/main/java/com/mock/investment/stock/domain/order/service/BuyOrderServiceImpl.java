@@ -44,12 +44,12 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
     /**
      * 주문 생성 - 시장가 주문
      */
-    @Transactional
     @Override
-    public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
+    @Transactional
+    public synchronized BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
-        Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
+        Account account = accountRepository.findByAccountNumberWithLock(buyOrderRequest.getAccountNumber());
 
         BuyOrder order = BuyOrder.builder()
                 .stock(stockRepository.getReferenceById(buyOrderRequest.getSymbol()))
@@ -66,10 +66,10 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
         account.buyByUSD(currentPrice.multiply(buyOrderRequest.getQuantity()));
 
         holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(buyOrderRequest.getAccountNumber(), buyOrderRequest.getSymbol())
-            .ifPresentOrElse(
-                    holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, buyOrderRequest, currentPrice),
-                    () -> createNewHoldingStock(account, buyOrderRequest, currentPrice)
-            );
+                .ifPresentOrElse(
+                        holdingStock -> updateExistingHoldingStock((HoldingStock) holdingStock, buyOrderRequest, currentPrice),
+                        () -> createNewHoldingStock(account, buyOrderRequest, currentPrice)
+                );
 
         accountRepository.save(account);
         BuyOrder saveOrder = buyOrderRepository.save(order);

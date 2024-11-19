@@ -49,6 +49,7 @@ public class StockService {
 	private final HttpClient httpClient;
 
 	@PostConstruct
+	@Transactional
 	public void init() {
 		updateStocksFromBybitAsync();
 	}

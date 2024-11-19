@@ -50,7 +50,7 @@ public class SellOrderServiceImpl implements OrderService<SellOrderRequest, Sell
     public SellOrderDto createMarketOrder(SellOrderRequest SellOrderRequest){
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(SellOrderRequest.getSymbol());
 
-        Account account = accountRepository.findByAccountNumber(SellOrderRequest.getAccountNumber());
+        Account account = accountRepository.findByAccountNumberWithLock(SellOrderRequest.getAccountNumber());
 
         holdingStockRepository.findByAccount_AccountNumberAndStockSymbol(SellOrderRequest.getAccountNumber(), SellOrderRequest.getSymbol())
                 .ifPresentOrElse(
