@@ -24,14 +24,14 @@ public class StockInfoHolder {
         BigDecimal price = new BigDecimal(data.get("lastPrice").asText());
         currentPrices.put(symbol, price);
 
-        StockTick stockTick = StockTick.fromJson(data);
-
-        try {
-            mongoTemplate.save(stockTick);
-            log.debug("Saved to MongoDB - Symbol: {}, Price: {}", symbol, price);
-        } catch (Exception e) {
-            log.error("Failed to save to MongoDB - Symbol: {}", symbol, e);
-        }
+//        StockTick stockTick = StockTick.fromJson(data);
+//
+//        try {
+//            mongoTemplate.save(stockTick);
+//            log.debug("Saved to MongoDB - Symbol: {}, Price: {}", symbol, price);
+//        } catch (Exception e) {
+//            log.error("Failed to save to MongoDB - Symbol: {}", symbol, e);
+//        }
     }
 
     public BigDecimal getCurrentPrice(String symbol) {

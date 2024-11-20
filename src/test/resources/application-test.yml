@@ -22,10 +22,6 @@ spring:
       hibernate:
         auto_quote_keyword: false
         globally_quoted_identifiers: false
-        format_sql: true
-        show_sql: true
-        connection:
-          isolation_level: REPEATABLE_READ
     defer-datasource-initialization: true
   sql:
     init:
