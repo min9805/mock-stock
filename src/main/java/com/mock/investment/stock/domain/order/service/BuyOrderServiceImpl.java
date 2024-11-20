@@ -8,24 +8,33 @@ import com.mock.investment.stock.domain.order.dao.BuyOrderRepository;
 import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.dto.*;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
+import com.mock.investment.stock.global.infra.redis.aop.DistributedLock;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrderDto> {
     private final BuyOrderRepository buyOrderRepository;
     private final StockRepository stockRepository;
     private final AccountRepository accountRepository;
+    private final HoldingStockRepository holdingStockRepository;
 
     private final StockInfoHolder stockInfoHolder;
-    private final HoldingStockRepository holdingStockRepository;
+    private final RedissonClient redissonClient;
 
     /**
      * 매수 주문 조회
@@ -45,12 +54,13 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
      */
     @Override
     @Transactional
+    @DistributedLock(key = "#buyOrderRequest.accountNumber")
     public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
         // 현재 주문 금액 조회
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
         // 계좌 조회 및 금액 차감
-        Account account = accountRepository.findByAccountNumberWithLock(buyOrderRequest.getAccountNumber());
+        Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
         account.buyByUSD(currentPrice.multiply(buyOrderRequest.getQuantity()));
         accountRepository.save(account);
 
@@ -64,7 +74,7 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
                         holdingStock -> updateExistingHoldingStock(holdingStock, buyOrderRequest, currentPrice),
                         () -> createNewHoldingStock(account, buyOrderRequest, currentPrice)
                 );
-
+        log.info("Buy Order created: {}", account.getUsdBalance());
         return BuyOrderDto.fromEntity(saveOrder);
     }
 
