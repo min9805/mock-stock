@@ -40,5 +40,17 @@ services:
     depends_on:
       - mongodb
 
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    environment:
+      - REDIS_PASSWORD=redis_password
+    restart: always
+
 volumes:
   mongodb_data:
+  redis_data:

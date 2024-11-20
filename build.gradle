@@ -24,6 +24,10 @@ repositories {
 }
 
 dependencies {
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// webSocket
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
@@ -51,6 +55,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// redis
+	implementation 'org.redisson:redisson-spring-boot-starter:3.16.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
