@@ -1,12 +1,17 @@
 package com.mock.investment.stock.domain.stock.api;
 
+import com.mock.investment.stock.domain.stock.application.RedisMessageListener;
 import com.mock.investment.stock.domain.stock.application.StockService;
 import com.mock.investment.stock.domain.stock.dto.StockDto;
 import com.mock.investment.stock.domain.stock.dto.StockTickDto;
 import com.mock.investment.stock.domain.stock.dto.StockTickPageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RTopic;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -22,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 @Tag(name = "Stock")
 public class StockController {
 	private final StockService stockService;
+	private final RedissonClient redissonClient;
 
 	@GetMapping("/update")
 	public List<StockDto> updateStocksFromUpbitAsync() throws ExecutionException, InterruptedException, TimeoutException {
@@ -46,5 +52,11 @@ public class StockController {
 	) {
 		String quote = quoteCoin.equals("All") ? "" : quoteCoin;
 		return stockService.getQuoteStocksOrderByTurnover(quote, page, size);
+	}
+
+	@MessageMapping("/send")
+	public void getStockPriceByWebsocket(String symbol) {
+		RTopic topic = redissonClient.getTopic("stock");
+		topic.publish(symbol);
 	}
 }

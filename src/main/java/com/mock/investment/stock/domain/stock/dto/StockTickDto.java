@@ -4,9 +4,13 @@ import com.mock.investment.stock.domain.stock.domain.StockTick;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-public class StockTickDto {
+public class StockTickDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String symbol;
     private Double lastPrice;
 
