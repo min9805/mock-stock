@@ -2,10 +2,13 @@ package com.mock.investment.stock.global.websocket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mock.investment.stock.domain.stock.application.StockMarketDataHandler;
+import com.mock.investment.stock.domain.stock.dto.TickerMessage;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RRateLimiter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -24,6 +27,10 @@ public class BybitWebSocketClient {
     private WebSocketSession session;
     private final ObjectMapper objectMapper;
     private final StockInfoHolder stockInfoHolder;
+    private final StockMarketDataHandler stockMarketDataHandler;
+
+    private static final long THROTTLE_INTERVAL = 1000; // 1초
+    private volatile long lastUpdateTime = 0;
 
     @PostConstruct
     public void connect() {
@@ -37,8 +44,7 @@ public class BybitWebSocketClient {
                     String subscribeMessage = "{" +
                             "\"op\":\"subscribe\"," +
                             "\"args\":[" +
-                            "\"tickers.BTCUSDT\"," +
-                            "\"tickers.ETHUSDT\"" +
+                            "\"tickers.BTCUSDT\"" +
                             "]" +
                             "}";                    try {
                         session.sendMessage(new TextMessage(subscribeMessage));
@@ -50,22 +56,28 @@ public class BybitWebSocketClient {
                 @Override
                 public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
                     try {
+                        // 스로틀링
+                        long currentTime = System.currentTimeMillis();
+                        if (currentTime - lastUpdateTime < THROTTLE_INTERVAL) {
+                            return;
+                        }
+
                         String payload = message.getPayload().toString();
                         JsonNode jsonNode = objectMapper.readTree(payload);
 
-                        // ping 메시지 처리
-                        if (jsonNode.has("op") && "ping".equals(jsonNode.get("op").asText())) {
-                            String pongMessage = "{\"op\":\"pong\"}";
-                            session.sendMessage(new TextMessage(pongMessage));
+                        if (jsonNode.has("success")) {
+                            log.info("Subscription success: {}", jsonNode);
                             return;
                         }
 
                         // 가격 데이터 처리
                         if (jsonNode.has("data")) {
+                            TickerMessage tickerMessage = objectMapper.readValue(payload, TickerMessage.class);
                             JsonNode data = jsonNode.get("data");
-                            String lastPrice = data.get("lastPrice").asText();
                             stockInfoHolder.updatePrice(data);
-                            log.debug("Price updated: {}", lastPrice);
+                            stockMarketDataHandler.saveStockTickData(tickerMessage);
+
+                            lastUpdateTime = currentTime;
                         }
                     } catch (Exception e) {
                         log.error("Error handling message", e);
