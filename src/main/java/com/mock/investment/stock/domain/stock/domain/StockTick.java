@@ -2,6 +2,7 @@ package com.mock.investment.stock.domain.stock.domain;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mock.investment.stock.domain.stock.dto.TickerMessage;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,11 +10,13 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
-@Document(collection = "stocks")
+@Document
 @Getter
 @Builder
 public class StockTick {
@@ -25,10 +28,7 @@ public class StockTick {
 
     // 시계열 쿼리를 위한 시간 필드들
     @Builder.Default
-    private Instant timestamp = Instant.now();
-
-    @Builder.Default
-    private LocalDateTime datetime = LocalDateTime.now();
+    private long timestamp = Instant.now().toEpochMilli();
 
     @Builder.Default
     private LocalDate date = LocalDate.now();
@@ -56,6 +56,28 @@ public class StockTick {
                 .lowPrice24h(data.get("lowPrice24h").asDouble())
                 .prevPrice24h(data.get("prevPrice24h").asDouble())
                 .price24hPcnt(data.get("price24hPcnt").asDouble())
+                .build();
+    }
+
+    public static StockTick fromTickerMessage(TickerMessage tickerMessage) {
+        LocalDateTime dateTime = Instant.ofEpochMilli(tickerMessage.getTs())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return StockTick.builder()
+                .symbol(tickerMessage.getData().getSymbol())
+                .lastPrice(tickerMessage.getData().getLastPrice().doubleValue())
+                .volume24h(tickerMessage.getData().getVolume24h().doubleValue())
+                .turnover24h(tickerMessage.getData().getTurnover24h().doubleValue())
+                .highPrice24h(tickerMessage.getData().getHighPrice24h().doubleValue())
+                .lowPrice24h(tickerMessage.getData().getLowPrice24h().doubleValue())
+                .prevPrice24h(tickerMessage.getData().getPrevPrice24h().doubleValue())
+                .price24hPcnt(tickerMessage.getData().getPrice24hPcnt().doubleValue())
+
+                .timestamp(tickerMessage.getTs())
+                .date(dateTime.toLocalDate())
+                .hour(dateTime.getHour())
+                .minute(dateTime.getMinute())
                 .build();
     }
 }
