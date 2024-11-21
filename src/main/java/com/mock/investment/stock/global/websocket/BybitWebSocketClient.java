@@ -38,11 +38,7 @@ public class BybitWebSocketClient {
                             "\"op\":\"subscribe\"," +
                             "\"args\":[" +
                             "\"tickers.BTCUSDT\"," +
-                            "\"tickers.ETHUSDT\"," +
-                            "\"tickers.SOLUSDT\"," +
-                            "\"tickers.BNBUSDT\"," +
-                            "\"tickers.BTCUSDC\"," +
-                            "\"tickers.ETHUSDC\"" +
+                            "\"tickers.ETHUSDT\"" +
                             "]" +
                             "}";                    try {
                         session.sendMessage(new TextMessage(subscribeMessage));
