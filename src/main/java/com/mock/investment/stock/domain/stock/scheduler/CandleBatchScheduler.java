@@ -22,7 +22,7 @@ public class CandleBatchScheduler {
     private final List<String> STOCKS = List.of("BTCUSDT");
 
 
-    @Scheduled(cron = "0 */15 * * * *") // 매시 0, 15, 30, 45분에 실행
+    @Scheduled(cron = "3 */15 * * * *") // 매시 0, 15, 30, 45분에 실행
     public void batchCandleData() {
         for (String stock : STOCKS) {
             RDeque<Object> deque = redissonClient.getDeque(CANDLE_KEY + ":" + stock + ":1m");
