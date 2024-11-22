@@ -9,10 +9,6 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class CandleStick {
-    private int minute;
-    private int hour;
-    private LocalDate date;
-
     private long startTime;      // 시작 시간 (ms)
     private double openPrice;    // 시가
     private double highPrice;    // 고가
@@ -25,10 +21,6 @@ public class CandleStick {
 
     public static CandleStick createCandle(StockTick stockTick) {
         return CandleStick.builder()
-                .minute(stockTick.getMinute())
-                .hour(stockTick.getHour())
-                .date(stockTick.getDate())
-
                 .startTime(stockTick.getTimestamp())
                 .openPrice(stockTick.getLastPrice())
                 .highPrice(stockTick.getLastPrice())

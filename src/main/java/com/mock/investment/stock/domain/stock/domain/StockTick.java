@@ -30,15 +30,6 @@ public class StockTick {
     @Builder.Default
     private long timestamp = Instant.now().toEpochMilli();
 
-    @Builder.Default
-    private LocalDate date = LocalDate.now();
-
-    @Builder.Default
-    private int hour = LocalDateTime.now().getHour();
-
-    @Builder.Default
-    private int minute = LocalDateTime.now().getMinute();
-
     private Double volume24h;
     private Double turnover24h;
     private Double highPrice24h;
@@ -75,9 +66,6 @@ public class StockTick {
                 .price24hPcnt(tickerMessage.getData().getPrice24hPcnt().doubleValue())
 
                 .timestamp(tickerMessage.getTs())
-                .date(dateTime.toLocalDate())
-                .hour(dateTime.getHour())
-                .minute(dateTime.getMinute())
                 .build();
     }
 }

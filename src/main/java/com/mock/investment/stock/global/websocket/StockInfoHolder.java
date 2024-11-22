@@ -32,10 +32,8 @@ public class StockInfoHolder {
         StockTick stockTick = StockTick.fromJson(data);
 
         RTopic topic = redissonClient.getTopic("stock/" + symbol);
-        log.info(topic.toString());
 
         topic.publish(StockTickDto.fromEntity(stockTick));
-        log.info("Published to Redis - Symbol: {}, Price: {}", symbol, price);
 
 //        try {
 //            mongoTemplate.save(stockTick);

@@ -1,17 +1,13 @@
 package com.mock.investment.stock.domain.stock.api;
 
-import com.mock.investment.stock.domain.stock.application.RedisMessageListener;
 import com.mock.investment.stock.domain.stock.application.StockService;
-import com.mock.investment.stock.domain.stock.dto.StockDto;
-import com.mock.investment.stock.domain.stock.dto.StockTickDto;
-import com.mock.investment.stock.domain.stock.dto.StockTickPageResponse;
+import com.mock.investment.stock.domain.stock.dto.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -52,6 +48,16 @@ public class StockController {
 	) {
 		String quote = quoteCoin.equals("All") ? "" : quoteCoin;
 		return stockService.getQuoteStocksOrderByTurnover(quote, page, size);
+	}
+
+	@GetMapping("/kline")
+	public KlineDto getKlineData(
+			@RequestParam(defaultValue = "BTCUSDT") String symbol,
+			@RequestParam(defaultValue = "1") Integer interval,
+			@RequestParam(defaultValue = "m") Character unit,
+			@RequestParam(defaultValue = "1735689600000") long endTime,
+			@RequestParam(defaultValue = "30") int limit) {
+		return stockService.getKlineData(symbol, interval, unit, endTime, limit);
 	}
 
 	@MessageMapping("/send")
