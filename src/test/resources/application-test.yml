@@ -1,0 +1,39 @@
+project:
+  version: test
+
+jwt:
+  secret:
+    access: dGVzdF9hY2Nlc3NfdG9rZW5fc2VjcmV0X2tleV9mb3JfdGVzdGluZ19wdXJwb3Nlc19vbmx5
+    refresh: dGVzdF9yZWZyZXNoX3Rva2VuX3NlY3JldF9rZXlfZm9yX3Rlc3RpbmdfcHVycG9zZXNfb25seQ==
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:mysql://localhost:13306/stock?serverTimezone=UTC&characterEncoding=UTF-8
+    username: min9805
+    password: backend
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        auto_quote_keyword: false
+        globally_quoted_identifiers: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: stock
+      username: admin
+      password: admin_password
+      authentication-database: admin
+  redis:
+    host: localhost
+    port: 6379

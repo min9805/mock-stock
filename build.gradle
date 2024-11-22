@@ -24,7 +24,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// webSocket
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
@@ -40,11 +43,29 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	compileOnly 'org.projectlombok:lombok'
+	// mysql
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// redis
+	implementation 'org.redisson:redisson-spring-boot-starter:3.16.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'com.h2database:h2'
+
+
 }
 
 tasks.named('test') {
