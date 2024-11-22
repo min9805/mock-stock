@@ -13,7 +13,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +39,10 @@ public class StockMarketDataHandler {
     private final List<List<Integer>> intervals = List.of(intervalMinutes, intervalHours, intervalDays, intervalMonths, intervalYears);
     private final List<Character> units = List.of('m', 'h', 'd', 'M', 'Y');
 
+    private final String CANDLESTICK_KEY = "candle";
+
     private String formatKey(String symbol, int interval, char unit) {
-        return String.format("%s:%d%c", symbol, interval, unit);
+        return String.format("%s:%s:%d%c", CANDLESTICK_KEY, symbol, interval, unit);
     }
 
     public void saveStockTickData(TickerMessage tickerMessage) {
@@ -80,15 +85,37 @@ public class StockMarketDataHandler {
 
     private boolean isSameInterval(CandleStick candle, StockTick stockTick, int interval, char unit) {
         if (unit == 'm'){
-            return (stockTick.getMinute() - candle.getMinute()) < interval;
+            long minute1 = stockTick.getTimestamp() / 60000;
+            long minute2 = candle.getStartTime() / 60000;
+            return minute1 - minute2 < interval;
         } else if (unit == 'h') {
-            return (stockTick.getHour() - candle.getHour()) < interval;
+            long hour1 = stockTick.getTimestamp() / 3600000;
+            long hour2 = candle.getStartTime() / 3600000;
+            return hour1 - hour2 < interval;
         } else if (unit == 'd') {
-            return ChronoUnit.DAYS.between(candle.getDate(), stockTick.getDate()) < interval;
+            long day1 = stockTick.getTimestamp() / 86400000;
+            long day2 = candle.getStartTime() / 86400000;
+            return day1 - day2 < interval;
         } else if (unit == 'M') {
-            return ChronoUnit.MONTHS.between(candle.getDate(), stockTick.getDate()) < interval;
+            LocalDateTime time1 = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(stockTick.getTimestamp()),
+                    ZoneId.systemDefault());
+            LocalDateTime time2 = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(candle.getStartTime()),
+                    ZoneId.systemDefault());
+
+            long monthsDiff = ChronoUnit.MONTHS.between(time2, time1);
+            return monthsDiff < interval;
         } else if (unit == 'Y') {
-            return ChronoUnit.YEARS.between(candle.getDate(), stockTick.getDate()) < interval;
+            LocalDateTime time1 = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(stockTick.getTimestamp()),
+                    ZoneId.systemDefault());
+            LocalDateTime time2 = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(candle.getStartTime()),
+                    ZoneId.systemDefault());
+
+            long yearsDiff = ChronoUnit.YEARS.between(time2, time1);
+            return yearsDiff < interval;
         }
         return false;
     }
