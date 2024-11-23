@@ -1,6 +1,7 @@
 package com.mock.investment.stock.domain.order.service;
 
 import com.mock.investment.stock.domain.order.dto.*;
+import com.mock.investment.stock.domain.user.domain.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface OrderService<T extends OrderRequest, R extends OrderDto> {
     /**
      * 시장가 주문 생성
      */
-    R createMarketOrder(T orderRequest);
+    R createMarketOrder(User user, T orderRequest);
 
     /**
      * 주문 취소

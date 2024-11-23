@@ -10,6 +10,7 @@ import com.mock.investment.stock.domain.order.domain.OrderStatus;
 import com.mock.investment.stock.domain.order.dto.*;
 import com.mock.investment.stock.domain.order.exception.InvalidOrderToSellException;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
+import com.mock.investment.stock.domain.user.domain.User;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class SellOrderServiceImpl implements OrderService<SellOrderRequest, Sell
      */
     @Transactional
     @Override
-    public SellOrderDto createMarketOrder(SellOrderRequest SellOrderRequest){
+    public SellOrderDto createMarketOrder(User user, SellOrderRequest SellOrderRequest){
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(SellOrderRequest.getSymbol());
 
         Account account = accountRepository.findByAccountNumberWithLock(SellOrderRequest.getAccountNumber());

@@ -7,7 +7,9 @@ import com.mock.investment.stock.domain.account.domain.HoldingStock;
 import com.mock.investment.stock.domain.order.dao.BuyOrderRepository;
 import com.mock.investment.stock.domain.order.domain.BuyOrder;
 import com.mock.investment.stock.domain.order.dto.*;
+import com.mock.investment.stock.domain.order.exception.UnauthorizedAccountOrderException;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
+import com.mock.investment.stock.domain.user.domain.User;
 import com.mock.investment.stock.global.infra.redis.aop.DistributedLock;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import lombok.RequiredArgsConstructor;
@@ -55,12 +57,17 @@ public class BuyOrderServiceImpl implements OrderService<BuyOrderRequest, BuyOrd
     @Override
     @Transactional
     @DistributedLock(key = "#buyOrderRequest.accountNumber")
-    public BuyOrderDto createMarketOrder(BuyOrderRequest buyOrderRequest){
+    public BuyOrderDto createMarketOrder(User user, BuyOrderRequest buyOrderRequest){
+        // 로그인 유저와 계좌 검증
+        Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
+        if(!account.getUser().getId().equals(user.getId())){
+            throw new UnauthorizedAccountOrderException();
+        }
+
         // 현재 주문 금액 조회
         BigDecimal currentPrice = stockInfoHolder.getCurrentPrice(buyOrderRequest.getSymbol());
 
         // 계좌 조회 및 금액 차감
-        Account account = accountRepository.findByAccountNumber(buyOrderRequest.getAccountNumber());
         account.buyByUSD(currentPrice.multiply(buyOrderRequest.getQuantity()));
         accountRepository.save(account);
 

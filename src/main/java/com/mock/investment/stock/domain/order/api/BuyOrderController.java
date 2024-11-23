@@ -4,6 +4,8 @@ import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
 import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
 import com.mock.investment.stock.domain.order.dto.OrderRequest;
 import com.mock.investment.stock.domain.order.service.BuyOrderServiceImpl;
+import com.mock.investment.stock.domain.user.domain.User;
+import com.mock.investment.stock.global.jwt.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,10 @@ public class BuyOrderController {
 
     @PostMapping("/market")
     public BuyOrderDto createBuyOrder(
+            @CurrentUser User user,
             @RequestBody BuyOrderRequest buyOrderRequest
     ){
-        return buyOrderServiceImpl.createMarketOrder(buyOrderRequest);
+        return buyOrderServiceImpl.createMarketOrder(user, buyOrderRequest);
     }
 
     @GetMapping("/")
