@@ -8,6 +8,7 @@ import com.mock.investment.stock.domain.order.domain.OrderType;
 import com.mock.investment.stock.domain.order.dto.BuyOrderDto;
 import com.mock.investment.stock.domain.order.dto.BuyOrderRequest;
 import com.mock.investment.stock.domain.stock.dao.StockRepository;
+import com.mock.investment.stock.domain.user.domain.User;
 import com.mock.investment.stock.global.websocket.StockInfoHolder;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,14 @@ class BuyOrderServiceConcurrencyTest {
     @Transactional
     void setUp() {
         // 테스트 계좌 생성
+        User testUser = User.builder()
+                .email("test@test.com")
+                .build();
+
         Account testAccount = Account.builder()
                 .accountNumber(ACCOUNT_NUMBER)
                 .usdBalance(INITIAL_BALANCE)
+                .user(testUser)
                 .build();
         accountRepository.save(testAccount);
 
@@ -93,6 +99,10 @@ class BuyOrderServiceConcurrencyTest {
                 try {
                     barrier.await(); // 모든 스레드가 동시에 시작하도록 대기
 
+                    User testUser = User.builder()
+                            .email("test@test.com")
+                            .build();
+
                     BuyOrderRequest request = BuyOrderRequest.builder()
                             .accountNumber(ACCOUNT_NUMBER)
                             .symbol(STOCK_SYMBOL)
@@ -100,7 +110,7 @@ class BuyOrderServiceConcurrencyTest {
                             .orderType(OrderType.MARKET)
                             .build();
 
-                    return buyOrderService.createMarketOrder(request);
+                    return buyOrderService.createMarketOrder(testUser, request);
                 } catch (Exception e) {
                     // 기존 로깅 유지
                     log.error("Error occurred during order creation", e);
