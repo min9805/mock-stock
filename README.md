@@ -8,6 +8,7 @@
 
 - [실시간 시세 데이터 가공 및 관리](https://happyzodiac.tistory.com/117)
 - [주문 동시성 제어 방법 비교](https://happyzodiac.tistory.com/116)
+- [WebSocket 에서 JWT 토큰 처리 방법](https://happyzodiac.tistory.com/118)
 - [BigDecimal 을 통한 부동소수점 부정확성 극복](https://happyzodiac.tistory.com/109)
 - [Java 언어에서의 동기화 방법 비교](https://happyzodiac.tistory.com/107)
 
