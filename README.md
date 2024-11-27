@@ -4,6 +4,8 @@
 
 [모의 투자 사이트 개발기 (2)](https://happyzodiac.tistory.com/115)
 
+[모의 투자 사이트 개발기 (2)](https://happyzodiac.tistory.com/119)
+
 # 주요 내용
 
 - [실시간 시세 데이터 가공 및 관리](https://happyzodiac.tistory.com/117)
